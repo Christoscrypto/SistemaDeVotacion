@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>¡Voto registrado! — Elección de Rey y Reina</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="text-white min-h-screen flex items-center justify-center px-6 no-x-scroll">
+
+  <div class="text-center max-w-md relative">
+    <div id="confetti-host" class="absolute inset-x-0 top-0 h-0 overflow-visible pointer-events-none" aria-hidden="true"></div>
+
+    <div class="success-crown mb-2" aria-hidden="true">👑</div>
+
+    <div class="success-check mb-6">
+      <svg viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 6"/></svg>
+    </div>
+
+    <h1 class="font-display text-3xl sm:text-4xl font-bold gold-text mb-4 fade-in-up" style="animation-delay: .55s;">
+      ¡VOTO REGISTRADO!
+    </h1>
+    <p class="text-gray-400 mb-2 fade-in-up" style="animation-delay: .65s;">
+      Gracias por participar en la elección de Rey y Reina de Programación 2026.
+    </p>
+    <p class="text-gray-500 text-sm mb-10 fade-in-up" style="animation-delay: .72s;">
+      Tu participación ha sido registrada correctamente.
+    </p>
+
+    <a href="/" class="btn-gold inline-block px-10 py-3.5 rounded-full tap-scale fade-in-up" style="animation-delay: .8s;">
+      VOLVER AL INICIO
+    </a>
+  </div>
+
+<script src="/js/security-guard.js"></script>
+<script>
+  // Confeti sutil: pocas piezas, colores de la identidad visual, respeta reduced-motion.
+  (function () {
+    var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    var host = document.getElementById("confetti-host");
+    var colors = ["#d4af37", "#f2d98a", "#7a1c2b", "#f5f3ee"];
+    var count = 14;
+
+    for (var i = 0; i < count; i++) {
+      var piece = document.createElement("span");
+      piece.className = "confetti-piece";
+      piece.style.left = (6 + Math.random() * 88) + "%";
+      piece.style.background = colors[i % colors.length];
+      piece.style.animationDuration = (900 + Math.random() * 500) + "ms";
+      piece.style.animationDelay = (300 + Math.random() * 500) + "ms";
+      piece.style.transform = "rotate(" + Math.floor(Math.random() * 60) + "deg)";
+      host.appendChild(piece);
+    }
+  })();
+</script>
+</body>
+</html>

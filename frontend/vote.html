@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Elige a tu Rey y Reina — Votación</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="text-white min-h-screen no-x-scroll">
+
+<div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+
+  <!-- Indicador de progreso (4 etapas) -->
+  <div id="vote-stepper" class="mb-8 sm:mb-10"></div>
+
+  <div id="loading-state" class="text-center py-24">
+    <div class="spinner w-10 h-10 mx-auto mb-4"></div>
+    <p class="text-gray-500">Cargando candidatos...</p>
+  </div>
+
+  <div id="error-state" class="hidden text-center py-24">
+    <p class="text-red-400 mb-4" id="error-message"></p>
+    <a href="/verify.html" class="btn-gold inline-block px-6 py-3 rounded-xl tap-scale">Verificar identidad</a>
+  </div>
+
+  <!-- PASO: REY -->
+  <section id="step-king" class="hidden step-panel">
+    <h1 class="font-display text-2xl sm:text-4xl font-bold text-center mb-2">👑 ELIGE AL REY</h1>
+    <p class="text-center text-gray-500 mb-8 text-sm sm:text-base">Selecciona a un candidato y presiona continuar.</p>
+    <div id="king-grid" class="candidates-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-6 stagger"></div>
+
+    <div class="sticky bottom-0 mt-8 pt-4 pb-2 bg-gradient-to-t from-[var(--bg-dark)] via-[var(--bg-dark)]/95 to-transparent">
+      <p id="king-selection-caption" class="selection-caption text-center text-sm text-gray-400 mb-3 opacity-0 h-5"></p>
+      <div class="text-center">
+        <button id="king-continue" disabled class="btn-gold w-full sm:w-auto px-10 py-3.5 rounded-full tap-scale">CONTINUAR</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASO: REINA -->
+  <section id="step-queen" class="hidden step-panel">
+    <button id="queen-back" type="button" class="text-gray-500 hover:text-gray-300 text-sm mb-4 flex items-center gap-1 tap-scale">
+      ← Regresar a elegir Rey
+    </button>
+    <h1 class="font-display text-2xl sm:text-4xl font-bold text-center mb-2">👸 ELIGE A LA REINA</h1>
+    <p class="text-center text-gray-500 mb-8 text-sm sm:text-base">¿Quién representará a nuestra especialidad?</p>
+    <div id="queen-grid" class="candidates-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-6 stagger"></div>
+
+    <div class="sticky bottom-0 mt-8 pt-4 pb-2 bg-gradient-to-t from-[var(--bg-dark)] via-[var(--bg-dark)]/95 to-transparent">
+      <p id="queen-selection-caption" class="selection-caption text-center text-sm text-gray-400 mb-3 opacity-0 h-5"></p>
+      <div class="text-center">
+        <button id="queen-continue" disabled class="btn-gold w-full sm:w-auto px-10 py-3.5 rounded-full tap-scale">REVISAR VOTO</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PASO: BOLETA DE CONFIRMACIÓN -->
+  <section id="step-confirm" class="hidden max-w-md mx-auto step-panel">
+    <h1 class="font-display text-2xl sm:text-4xl font-bold text-center mb-1">REVISAR VOTO</h1>
+    <p class="text-center text-gray-500 text-sm mb-8">Así se registrará tu voto. Revísalo con calma.</p>
+
+    <div class="ballot p-5 sm:p-6 mb-6">
+      <div class="ballot-row flex items-center gap-4 py-4">
+        <div id="confirm-king-photo-wrap" class="ballot-photo-fallback">👑</div>
+        <div class="min-w-0">
+          <p class="text-xs tracking-widest text-gray-500 mb-0.5">👑 REY</p>
+          <p class="font-semibold truncate" id="confirm-king-name"></p>
+          <p class="text-xs text-gray-500 truncate" id="confirm-king-group"></p>
+        </div>
+      </div>
+      <div class="ballot-row flex items-center gap-4 py-4">
+        <div id="confirm-queen-photo-wrap" class="ballot-photo-fallback">👸</div>
+        <div class="min-w-0">
+          <p class="text-xs tracking-widest text-gray-500 mb-0.5">👸 REINA</p>
+          <p class="font-semibold truncate" id="confirm-queen-name"></p>
+          <p class="text-xs text-gray-500 truncate" id="confirm-queen-group"></p>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-gray-400 text-sm mb-6">
+      ⚠️ Una vez confirmado, tu voto no podrá modificarse.
+    </p>
+
+    <div id="confirm-error" class="hidden text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl px-4 py-3 mb-6 text-center"></div>
+
+    <div class="flex flex-col sm:flex-row gap-3">
+      <button id="btn-back" class="btn-outline flex-1 rounded-full py-3.5 tap-scale order-2 sm:order-1">EDITAR VOTO</button>
+      <button id="btn-confirm" class="btn-gold flex-1 rounded-full py-3.5 tap-scale order-1 sm:order-2">CONFIRMAR MI VOTO</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- Overlay de registro de voto -->
+<div id="registering-overlay" class="hidden fixed inset-0 z-50 bg-[var(--bg-darker)]/95 flex items-center justify-center px-6">
+  <div class="text-center">
+    <div class="spinner w-10 h-10 mx-auto mb-5"></div>
+    <p class="text-gray-300 font-display text-lg">Registrando voto...</p>
+  </div>
+</div>
+
+<script src="/js/security-guard.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/stepper.js"></script>
+<script src="/js/vote.js"></script>
+</body>
+</html>

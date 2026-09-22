@@ -1,0 +1,537 @@
+/* ============================================================
+   Elección de Rey y Reina — Programación 2026
+   Estilos personalizados sobre Tailwind CSS (cargado vía CDN)
+   Identidad: gala / ceremonia — negro azulado, dorado, vino oscuro
+   ============================================================ */
+
+:root {
+  --gold: #d4af37;
+  --gold-light: #f2d98a;
+  --gold-deep: #a5791d;
+  --bg-dark: #05060a;
+  --bg-darker: #020203;
+  --bg-card: #12131a;
+  --bg-card-2: #191a23;
+  --wine: #4a0e18;
+  --wine-light: #7a1c2b;
+  --wine-deep: #23060c;
+  --ink: #f5f3ee;
+
+  --t-fast: 180ms;
+  --t-base: 350ms;
+  --t-slow: 550ms;
+  --ease-out: cubic-bezier(.22, 1, .36, 1);
+  --ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+* { -webkit-tap-highlight-color: transparent; }
+
+html { overflow-x: hidden; }
+
+body {
+  background-color: var(--bg-dark);
+  background-image: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212,175,55,0.08), transparent 60%);
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  min-height: 100dvh;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
+
+.gold-text {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-border {
+  border-color: var(--gold);
+}
+
+.card-glow {
+  transition: transform var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out), border-color var(--t-base) var(--ease-out);
+}
+
+.card-glow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.35);
+  border-color: var(--gold);
+}
+.card-glow:active { transform: translateY(-1px) scale(0.99); }
+
+.candidate-selected {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.5), 0 10px 30px -10px rgba(212, 175, 55, 0.5);
+}
+
+.fade-in-up {
+  animation: fadeInUp var(--t-slow) var(--ease-out) both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stagger > * {
+  animation: fadeInUp var(--t-slow) var(--ease-out) both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.3s; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-light), var(--gold));
+  color: #101010;
+  font-weight: 600;
+  transition: filter var(--t-fast) ease, transform var(--t-fast) ease, box-shadow var(--t-fast) ease;
+  touch-action: manipulation;
+}
+.btn-gold:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-gold:active { transform: translateY(0) scale(0.97); }
+.btn-gold:disabled { opacity: 0.5; cursor: not-allowed; transform: none; filter: none; }
+
+.btn-outline {
+  border: 1px solid rgba(255,255,255,0.18);
+  transition: background-color var(--t-fast) ease, transform var(--t-fast) ease, border-color var(--t-fast) ease;
+  touch-action: manipulation;
+}
+.btn-outline:hover { background-color: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); }
+.btn-outline:active { transform: scale(0.97); }
+
+.progress-bar-bg { background: #26262b; }
+.progress-bar-fill {
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  transition: width 900ms var(--ease-out);
+}
+
+.nav-btn {
+  color: #9ca3af;
+  transition: background-color var(--t-fast) ease, color var(--t-fast) ease;
+}
+.nav-btn:hover { background-color: rgba(255,255,255,0.05); color: #fff; }
+.nav-btn.active {
+  background-color: rgba(212, 175, 55, 0.12);
+  color: var(--gold-light);
+  font-weight: 600;
+}
+
+.spinner {
+  border: 3px solid rgba(212, 175, 55, 0.2);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   CORTINAS DE GALA — pantalla de introducción
+   ============================================================ */
+
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  overflow: hidden;
+  background: var(--bg-darker);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Una vez terminada (o saltada) la animación, la pantalla deja de ser un
+   overlay a pantalla completa y pasa a ser el hero normal de la página,
+   para no tapar el contenido que viene después (cómo funciona, footer, etc). */
+.intro-screen.intro-done {
+  position: relative;
+  inset: auto;
+  min-height: 100dvh;
+}
+
+.curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 51%;
+  z-index: 2;
+  background:
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.14) 0 3%, rgba(255,255,255,0.03) 3% 6%),
+    linear-gradient(180deg, var(--wine-light) 0%, var(--wine) 45%, var(--wine-deep) 100%);
+  box-shadow: inset -30px 0 60px rgba(0,0,0,0.55), inset 0 -40px 80px rgba(0,0,0,0.4);
+  transition: transform 2400ms cubic-bezier(0.45, 0, 0.2, 1);
+  will-change: transform;
+}
+/* La cortina izquierda se extiende 1% de más por debajo de la derecha
+   (misma técnica que un traslape de "sangrado") solo para evitar cualquier
+   hilo de fondo visible por redondeo de subpíxeles; como la derecha se
+   pinta encima (va después en el DOM) y tiene su propio borde dorado en su
+   borde izquierdo exacto (50%), la costura que se ve siempre queda
+   perfectamente centrada, no la del borde oculto de la izquierda. */
+.curtain-left { left: 0; transform: translateX(0); }
+.curtain-right { right: 0; width: 50%; transform: translateX(0); border-left: 2px solid var(--gold-deep); }
+.curtain::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 55%);
+}
+.intro-screen.open .curtain-left { transform: translateX(-101%); }
+.intro-screen.open .curtain-right { transform: translateX(101%); }
+.intro-screen.no-anim .curtain { transition: none; }
+
+.intro-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 24px;
+  max-width: 26rem;
+  width: 100%;
+}
+
+.intro-crown {
+  font-size: 3.25rem;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(-55px) scale(0.8);
+  filter: drop-shadow(0 0 18px rgba(212,175,55,0));
+  display: inline-block;
+}
+.intro-screen.show-crown .intro-crown {
+  animation: crownDrop 550ms var(--ease-bounce) forwards;
+}
+@keyframes crownDrop {
+  0%   { opacity: 0; transform: translateY(-55px) scale(0.8); filter: drop-shadow(0 0 0 rgba(212,175,55,0)); }
+  55%  { opacity: 1; transform: translateY(6px) scale(1.08); }
+  75%  { filter: drop-shadow(0 0 22px rgba(212,175,55,0.55)); }
+  100% { opacity: 1; transform: translateY(0) scale(1); filter: drop-shadow(0 0 8px rgba(212,175,55,0.25)); }
+}
+
+.intro-title-block { opacity: 0; transform: translateY(10px); transition: opacity var(--t-base) var(--ease-out), transform var(--t-base) var(--ease-out); }
+.intro-screen.show-title .intro-title-block { opacity: 1; transform: translateY(0); }
+
+.intro-cta-block { opacity: 0; transform: translateY(10px); transition: opacity var(--t-base) var(--ease-out) 80ms, transform var(--t-base) var(--ease-out) 80ms; }
+.intro-screen.show-cta .intro-cta-block { opacity: 1; transform: translateY(0); }
+
+.skip-intro-btn {
+  position: absolute;
+  bottom: 22px;
+  right: 20px;
+  z-index: 3;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.5);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 8px 10px;
+  transition: color var(--t-fast) ease;
+}
+.skip-intro-btn:hover { color: rgba(255,255,255,0.85); }
+.intro-screen.show-cta .skip-intro-btn,
+.intro-screen.show-title .skip-intro-btn { opacity: 0.001; pointer-events: none; }
+
+.replay-intro-link {
+  font-size: 0.72rem;
+  color: #6b7280;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.replay-intro-link:hover { color: #9ca3af; }
+
+/* ============================================================
+   INDICADOR DE PROGRESO (4 etapas)
+   ============================================================ */
+
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4px;
+  max-width: 30rem;
+  margin: 0 auto;
+}
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+.stepper-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 2px solid #33343c;
+  color: #6b7280;
+  background: var(--bg-card);
+  transition: border-color var(--t-base) ease, background var(--t-base) ease, color var(--t-base) ease, box-shadow var(--t-base) ease, transform var(--t-base) var(--ease-bounce);
+  flex-shrink: 0;
+}
+.stepper-line {
+  flex: 1;
+  height: 2px;
+  background: #2a2b33;
+  margin-top: 12px;
+  transition: background var(--t-slow) ease;
+  min-width: 8px;
+}
+.stepper-row { display: flex; align-items: center; width: 100%; }
+.stepper-label {
+  margin-top: 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  color: #6b7280;
+  text-align: center;
+  white-space: nowrap;
+  transition: color var(--t-base) ease;
+}
+@media (min-width: 400px) {
+  .stepper-label { font-size: 0.68rem; }
+}
+
+.stepper-item.is-done .stepper-dot {
+  border-color: var(--gold);
+  background: var(--gold);
+  color: #101010;
+  transform: scale(1);
+}
+.stepper-item.is-done .stepper-label { color: #a3a3ad; }
+.stepper-row.is-filled .stepper-line { background: var(--gold); }
+
+.stepper-item.is-active .stepper-dot {
+  border-color: var(--gold);
+  color: var(--gold-light);
+  box-shadow: 0 0 0 4px rgba(212,175,55,0.18);
+  transform: scale(1.12);
+}
+.stepper-item.is-active .stepper-label { color: var(--gold-light); font-weight: 600; }
+
+.stepper-counter {
+  text-align: center;
+  font-size: 0.68rem;
+  color: #6b7280;
+  letter-spacing: 0.08em;
+  margin-top: 10px;
+}
+
+/* ============================================================
+   SELECCIÓN DE CANDIDATOS
+   ============================================================ */
+
+.candidates-grid { position: relative; }
+
+.candidate-card {
+  position: relative;
+  overflow: visible;
+  transition: transform var(--t-base) var(--ease-out), opacity var(--t-base) var(--ease-out),
+              filter var(--t-base) var(--ease-out), box-shadow var(--t-base) var(--ease-out),
+              border-color var(--t-base) var(--ease-out);
+}
+.candidate-card > .candidate-card-inner {
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.candidates-grid.has-selection .candidate-card:not(.candidate-selected) {
+  filter: grayscale(1) brightness(0.55);
+  opacity: 0.55;
+  transform: scale(0.97);
+}
+
+.candidate-card.candidate-selected {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 2px rgba(212,175,55,0.55), 0 20px 45px -14px rgba(212,175,55,0.55);
+  transform: translateY(-6px) scale(1.02);
+  filter: none;
+  opacity: 1;
+  animation: selectPop 380ms var(--ease-bounce);
+}
+@keyframes selectPop {
+  0% { transform: translateY(-6px) scale(0.97); }
+  55% { transform: translateY(-8px) scale(1.035); }
+  100% { transform: translateY(-6px) scale(1.02); }
+}
+
+.candidate-sparkle {
+  position: absolute;
+  top: -14px;
+  font-size: 0.85rem;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.candidate-sparkle.spark-1 { left: 28%; }
+.candidate-sparkle.spark-2 { right: 26%; }
+.candidate-card.candidate-selected .candidate-sparkle {
+  animation: sparkleTwinkle 700ms ease 380ms;
+}
+@keyframes sparkleTwinkle {
+  0% { opacity: 0; transform: translateY(4px) scale(0.6); }
+  35% { opacity: 1; transform: translateY(-4px) scale(1.1); }
+  70% { opacity: 0.6; }
+  100% { opacity: 0; transform: translateY(-10px) scale(0.9); }
+}
+
+.select-label {
+  transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, color var(--t-fast) ease;
+}
+.candidate-card.candidate-selected .select-label {
+  background: rgba(212,175,55,0.14);
+  border-color: var(--gold);
+  color: var(--gold-light);
+  font-weight: 600;
+}
+
+.selection-caption {
+  transition: opacity var(--t-base) ease, transform var(--t-base) ease;
+}
+
+/* ============================================================
+   TRANSICIONES ENTRE ETAPAS
+   ============================================================ */
+
+.step-panel {
+  animation: stepIn var(--t-base) var(--ease-out) both;
+}
+@keyframes stepIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ============================================================
+   BOLETA DIGITAL DE CONFIRMACIÓN
+   ============================================================ */
+
+.ballot {
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
+  border: 1px solid rgba(212,175,55,0.25);
+  border-radius: 1.25rem;
+  position: relative;
+}
+.ballot::before {
+  content: "";
+  position: absolute;
+  left: 14px; right: 14px; top: 0;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, rgba(212,175,55,0.4) 0 6px, transparent 6px 12px);
+}
+.ballot-row + .ballot-row {
+  border-top: 1px dashed rgba(255,255,255,0.12);
+}
+.ballot-photo {
+  width: 64px; height: 64px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+  flex-shrink: 0;
+}
+.ballot-photo-fallback {
+  width: 64px; height: 64px;
+  border-radius: 999px;
+  border: 2px solid var(--gold);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+  background: rgba(212,175,55,0.08);
+}
+
+/* ============================================================
+   PANTALLA DE ÉXITO
+   ============================================================ */
+
+.success-check {
+  width: 84px; height: 84px;
+  border-radius: 999px;
+  border: 3px solid var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto;
+  position: relative;
+  box-shadow: 0 0 0 rgba(212,175,55,0.4);
+  animation: successRing 620ms var(--ease-bounce) both;
+}
+@keyframes successRing {
+  0% { transform: scale(0.5); opacity: 0; box-shadow: 0 0 0 rgba(212,175,55,0); }
+  70% { box-shadow: 0 0 30px rgba(212,175,55,0.45); }
+  100% { transform: scale(1); opacity: 1; box-shadow: 0 0 18px rgba(212,175,55,0.25); }
+}
+.success-check svg {
+  width: 40px; height: 40px;
+}
+.success-check svg path {
+  stroke: var(--gold-light);
+  stroke-width: 3;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: checkDraw 420ms ease 480ms forwards;
+}
+@keyframes checkDraw { to { stroke-dashoffset: 0; } }
+
+.success-crown {
+  font-size: 2.4rem;
+  opacity: 0;
+  transform: translateY(-40px) scale(0.8);
+  display: inline-block;
+  animation: crownDrop 500ms var(--ease-bounce) 120ms forwards;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -10px;
+  width: 7px;
+  height: 12px;
+  opacity: 0.9;
+  border-radius: 1px;
+  animation-name: confettiFall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.95; }
+  100% { transform: translateY(120px) rotate(300deg); opacity: 0; }
+}
+
+/* ============================================================
+   MICROINTERACCIONES / UTILIDADES
+   ============================================================ */
+
+.tap-scale { transition: transform var(--t-fast) ease; touch-action: manipulation; }
+.tap-scale:active { transform: scale(0.96); }
+
+.count-up { font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   ACCESIBILIDAD / RENDIMIENTO
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .curtain { transition: none !important; }
+}
+
+/* ============================================================
+   MOBILE FIRST — breakpoints de referencia: 360 / 375 / 390 / 414 / 430
+   ============================================================ */
+
+img { max-width: 100%; }
+.no-x-scroll { overflow-x: hidden; }
+body.intro-locked { overflow: hidden; height: 100dvh; }

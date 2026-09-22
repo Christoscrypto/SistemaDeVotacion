@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Panel de administración — Elección de Rey y Reina</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="text-white min-h-screen">
+
+<!-- LOGIN -->
+<div id="login-view" class="min-h-screen flex items-center justify-center px-6">
+  <div class="w-full max-w-sm fade-in-up">
+    <div class="text-center mb-8">
+      <div class="text-4xl mb-2">🔐</div>
+      <h1 class="font-display text-2xl font-bold">Panel de administración</h1>
+    </div>
+    <form id="login-form" class="bg-[var(--bg-card)] border border-white/10 rounded-2xl p-8 space-y-5">
+      <div>
+        <label class="block text-sm text-gray-400 mb-1.5">Usuario</label>
+        <input id="login-username" type="text" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 outline-none focus:gold-border">
+      </div>
+      <div>
+        <label class="block text-sm text-gray-400 mb-1.5">Contraseña</label>
+        <input id="login-password" type="password" required class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 outline-none focus:gold-border">
+      </div>
+      <div id="login-error" class="hidden text-sm text-red-400 bg-red-950/40 border border-red-900 rounded-xl px-4 py-3"></div>
+      <button type="submit" class="btn-gold w-full py-3 rounded-xl">INGRESAR</button>
+    </form>
+    <p class="text-center text-gray-600 text-xs mt-6"><a href="/" class="hover:text-gray-400">← Volver al inicio</a></p>
+  </div>
+</div>
+
+<!-- PANEL -->
+<div id="panel-view" class="hidden min-h-screen">
+  <div class="flex flex-col lg:flex-row">
+
+    <!-- Sidebar -->
+    <aside class="lg:w-64 border-b lg:border-b-0 lg:border-r border-white/10 p-5">
+      <p class="font-display text-lg font-bold gold-text mb-6">👑 Panel Admin</p>
+      <nav class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible" id="admin-nav">
+        <button data-tab="dashboard" class="nav-btn text-left px-4 py-2.5 rounded-xl whitespace-nowrap">Dashboard</button>
+        <button data-tab="candidates" class="nav-btn text-left px-4 py-2.5 rounded-xl whitespace-nowrap">Candidatos</button>
+        <button data-tab="voters" class="nav-btn text-left px-4 py-2.5 rounded-xl whitespace-nowrap">Votantes</button>
+        <button data-tab="results" class="nav-btn text-left px-4 py-2.5 rounded-xl whitespace-nowrap">Resultados</button>
+        <button data-tab="settings" class="nav-btn text-left px-4 py-2.5 rounded-xl whitespace-nowrap">Configuración</button>
+      </nav>
+      <button id="logout-btn" class="mt-6 text-sm text-gray-500 hover:text-gray-300">Cerrar sesión</button>
+    </aside>
+
+    <!-- Content -->
+    <main class="flex-1 p-6 lg:p-10">
+
+      <!-- DASHBOARD -->
+      <section id="tab-dashboard" class="tab-content">
+        <h2 class="font-display text-2xl font-bold mb-6">Dashboard</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5" id="dashboard-cards">
+          <div class="bg-[var(--bg-card)] border border-white/10 rounded-2xl p-6">
+            <p class="text-gray-500 text-sm mb-1">Total de alumnos</p>
+            <p class="text-3xl font-bold" id="stat-total">—</p>
+          </div>
+          <div class="bg-[var(--bg-card)] border border-white/10 rounded-2xl p-6">
+            <p class="text-gray-500 text-sm mb-1">Ya votaron</p>
+            <p class="text-3xl font-bold" id="stat-voted">—</p>
+          </div>
+          <div class="bg-[var(--bg-card)] border border-white/10 rounded-2xl p-6">
+            <p class="text-gray-500 text-sm mb-1">Pendientes</p>
+            <p class="text-3xl font-bold" id="stat-pending">—</p>
+          </div>
+          <div class="bg-[var(--bg-card)] border gold-border rounded-2xl p-6">
+            <p class="text-gray-500 text-sm mb-1">Participación</p>
+            <p class="text-3xl font-bold gold-text" id="stat-participation">—</p>
+          </div>
+        </div>
+        <div class="mt-6 bg-[var(--bg-card)] border border-white/10 rounded-2xl p-6">
+          <p class="text-gray-500 text-sm mb-1">Estado de la elección</p>
+          <p class="text-xl font-semibold" id="stat-election-status">—</p>
+        </div>
+      </section>
+
+      <!-- CANDIDATOS -->
+      <section id="tab-candidates" class="tab-content hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="font-display text-2xl font-bold">Candidatos</h2>
+          <button id="new-candidate-btn" class="btn-gold px-5 py-2.5 rounded-xl text-sm">➕ Agregar candidato</button>
+        </div>
+
+        <div id="candidate-form-box" class="hidden bg-[var(--bg-card)] border gold-border rounded-2xl p-6 mb-6">
+          <h3 class="font-semibold mb-4" id="candidate-form-title">Nuevo candidato</h3>
+          <form id="candidate-form" class="grid sm:grid-cols-2 gap-4">
+            <input type="hidden" id="candidate-id">
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Nombre</label>
+              <input id="candidate-name" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 outline-none focus:gold-border">
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Categoría</label>
+              <select id="candidate-category" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 outline-none focus:gold-border">
+                <option value="king">Rey</option>
+                <option value="queen">Reina</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-gray-400 mb-1">Grupo</label>
+              <input id="candidate-group" required class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 outline-none focus:gold-border">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs text-gray-400 mb-1">Foto del candidato</label>
+              <div class="flex items-start gap-4">
+                <img id="candidate-photo-preview" class="w-20 h-20 rounded-xl object-cover border border-white/10 bg-black/40 hidden">
+                <div class="flex-1 space-y-2">
+                  <input id="candidate-photo" placeholder="Pega una URL de imagen..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 outline-none focus:gold-border text-sm">
+                  <div class="flex items-center gap-2">
+                    <label for="candidate-photo-file" class="text-xs px-3 py-2 rounded-lg border border-white/15 hover:bg-white/5 cursor-pointer">📤 Subir imagen</label>
+                    <input id="candidate-photo-file" type="file" accept="image/*" class="hidden">
+                    <button type="button" id="candidate-photo-clear" class="text-xs px-3 py-2 rounded-lg border border-white/15 hover:bg-white/5 hidden">Quitar foto</button>
+                    <span id="candidate-photo-status" class="text-xs text-gray-500"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs text-gray-400 mb-1">Descripción</label>
+              <textarea id="candidate-description" rows="2" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 outline-none focus:gold-border"></textarea>
+            </div>
+            <div class="sm:col-span-2 flex items-center gap-2">
+              <input type="checkbox" id="candidate-active" checked class="accent-[var(--gold)]">
+              <label for="candidate-active" class="text-sm text-gray-400">Activo</label>
+            </div>
+            <div class="sm:col-span-2 flex gap-3 mt-2">
+              <button type="submit" class="btn-gold px-6 py-2.5 rounded-xl text-sm">Guardar</button>
+              <button type="button" id="cancel-candidate-btn" class="px-6 py-2.5 rounded-xl text-sm border border-white/15 hover:bg-white/5">Cancelar</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="candidates-list" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+      </section>
+
+      <!-- VOTANTES -->
+      <section id="tab-voters" class="tab-content hidden">
+        <h2 class="font-display text-2xl font-bold mb-6">Votantes</h2>
+
+        <div class="bg-[var(--bg-card)] border border-white/10 rounded-2xl p-6 mb-6">
+          <p class="font-semibold mb-2">Importar alumnos (CSV)</p>
+          <p class="text-xs text-gray-500 mb-4">Columnas requeridas: control_number, institutional_email</p>
+          <form id="import-form" class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+            <input type="file" id="import-file" accept=".csv" required class="text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-white/10 file:text-white file:text-sm">
+            <button type="submit" class="btn-gold px-5 py-2.5 rounded-xl text-sm whitespace-nowrap">Importar</button>
+          </form>
+          <div id="import-result" class="hidden mt-4 text-sm bg-black/30 border border-white/10 rounded-xl p-4"></div>
+        </div>
+
+        <div class="bg-[var(--bg-card)] border border-white/10 rounded-2xl overflow-hidden">
+          <div class="max-h-[480px] overflow-y-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-black/30 sticky top-0">
+                <tr class="text-left text-gray-500">
+                  <th class="px-5 py-3">Número de control</th>
+                  <th class="px-5 py-3">Estado</th>
+                </tr>
+              </thead>
+              <tbody id="voters-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESULTADOS -->
+      <section id="tab-results" class="tab-content hidden">
+        <h2 class="font-display text-2xl font-bold mb-6">Resultados</h2>
+        <div class="space-y-10" id="admin-results-content"></div>
+      </section>
+
+      <!-- CONFIGURACIÓN -->
+      <section id="tab-settings" class="tab-content hidden">
+        <h2 class="font-display text-2xl font-bold mb-6">Configuración de la elección</h2>
+        <div class="bg-[var(--bg-card)] border border-white/10 rounded-2xl p-6 max-w-lg space-y-6">
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-semibold">Estado de la votación</p>
+              <p class="text-xs text-gray-500" id="settings-open-status">—</p>
+            </div>
+            <button id="toggle-open-btn" class="px-5 py-2.5 rounded-xl text-sm border border-white/15 hover:bg-white/5">Cambiar</button>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-semibold">Mostrar resultados al público</p>
+              <p class="text-xs text-gray-500" id="settings-results-status">—</p>
+            </div>
+            <button id="toggle-results-btn" class="px-5 py-2.5 rounded-xl text-sm border border-white/15 hover:bg-white/5">Cambiar</button>
+          </div>
+
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Nombre de la elección</label>
+            <input id="settings-name" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 outline-none focus:gold-border">
+          </div>
+          <div>
+            <label class="block text-xs text-gray-400 mb-1">Año / Generación</label>
+            <input id="settings-year" type="number" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2.5 outline-none focus:gold-border">
+          </div>
+          <button id="save-settings-btn" class="btn-gold px-6 py-2.5 rounded-xl text-sm">Guardar cambios</button>
+          <p id="settings-saved-msg" class="hidden text-sm text-green-400">Guardado ✓</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script src="/js/security-guard.js"></script>
+<script src="/js/config.js"></script>
+<script src="/js/admin.js"></script>
+</body>
+</html>

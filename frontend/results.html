@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Resultados — Elección de Rey y Reina</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="text-white min-h-screen no-x-scroll">
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-14">
+  <h1 class="font-display text-3xl sm:text-4xl font-bold text-center mb-2 fade-in-up">RESULTADOS</h1>
+  <p class="text-center text-gray-500 mb-2" id="stats-line">Cargando...</p>
+  <p class="text-center text-gray-600 text-sm mb-12">Elección de Rey y Reina — Programación</p>
+
+  <div id="loading" class="text-center py-16">
+    <div class="spinner w-10 h-10 mx-auto"></div>
+  </div>
+
+  <div id="hidden-results" class="hidden text-center bg-[var(--bg-card)] border border-white/10 rounded-2xl p-12">
+    <div class="text-4xl mb-4">🔒</div>
+    <p class="text-gray-400">Los resultados se publicarán cuando finalice la votación.</p>
+  </div>
+
+  <div id="results-content" class="hidden space-y-14">
+    <section>
+      <h2 class="font-display text-2xl font-semibold mb-6 text-center">👑 REY DE PROGRAMACIÓN</h2>
+      <div id="king-results" class="space-y-4"></div>
+    </section>
+    <section>
+      <h2 class="font-display text-2xl font-semibold mb-6 text-center">👸 REINA DE PROGRAMACIÓN</h2>
+      <div id="queen-results" class="space-y-4"></div>
+    </section>
+  </div>
+</div>
+
+<script src="/js/config.js"></script>
+<script src="/js/results.js"></script>
+</body>
+</html>
