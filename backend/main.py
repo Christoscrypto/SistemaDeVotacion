@@ -47,8 +47,7 @@ async def on_startup():
 # ---------- Archivos estáticos del frontend ----------
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 
-app.mount("/css", StaticFiles(directory=str(FRONTEND_DIR / "css")), name="css")
-app.mount("/js", StaticFiles(directory=str(FRONTEND_DIR / "js")), name="js")
+
 
 
 def _serve(filename: str, no_store: bool = False):
